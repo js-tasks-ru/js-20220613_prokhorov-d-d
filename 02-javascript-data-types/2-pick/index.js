@@ -6,10 +6,12 @@
  */
 export const pick = (obj, ...fields) => {
   let pickObj = {};
-  for (let i = 0; i < fields.length; i++) {
-    for (let key in obj) {
-      if (fields[i] === key) {
-        pickObj[fields[i]] = obj[key];
+  const props = Object.keys(obj);
+
+  for (let prop of props) {
+    for (let i = 0; i < fields.length; i++) {
+      if (fields[i] === prop) {
+        pickObj[fields[i]] = obj[prop];
       }
     }
   }
