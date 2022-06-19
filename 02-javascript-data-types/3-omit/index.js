@@ -5,7 +5,7 @@
  * @returns {object} - returns the new object
  */
 export const omit = (obj, ...fields) => {
-  let pickObj = Object.assign({}, obj);
+  let pickObj = JSON.parse(JSON.stringify(obj));
 
   for (let key in pickObj) {
     for (let i = 0; i < fields.length; i++) {
