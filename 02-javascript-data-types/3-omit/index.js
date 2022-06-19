@@ -5,5 +5,14 @@
  * @returns {object} - returns the new object
  */
 export const omit = (obj, ...fields) => {
+  let pickObj = Object.assign({}, obj);
 
+  for (let key in pickObj) {
+    for (let i = 0; i < fields.length; i++) {
+      if (key === fields[i]) {
+        delete pickObj[key];
+      }
+    }
+  }
+  return pickObj;
 };
