@@ -5,17 +5,18 @@
  * @returns {string[]}
  */
 export function sortStrings(arr, param = "asc") {
-  let collator = new Intl.Collator("ru-RU", {
+  const collator = new Intl.Collator(["ru", "en"], {
     sensitivity: "variant",
     caseFirst: "upper",
   });
+  const cpyArr = arr.slice();
 
   arr =
     param === "asc"
-      ? arr.slice().sort(collator.compare)
+      ? cpyArr.sort(collator.compare)
       : param === "desc"
-      ? arr.slice().sort(collator.compare).reverse()
-      : undefined;
+      ? cpyArr.sort((a, b) => collator.compare(b, a))
+      : null;
 
   return arr;
 }
