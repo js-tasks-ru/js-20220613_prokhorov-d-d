@@ -4,8 +4,10 @@
  * @param {...string} fields - the properties paths to omit
  * @returns {object} - returns the new object
  */
+import cloneDeep from "lodash/clonedeep";
+
 export const omit = (obj, ...fields) => {
-  let pickObj = JSON.parse(JSON.stringify(obj));
+  let pickObj = cloneDeep(obj);
   const props = Object.keys(pickObj);
 
   for (const prop of props) {
