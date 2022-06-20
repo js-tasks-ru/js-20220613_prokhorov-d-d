@@ -8,7 +8,7 @@ export const pick = (obj, ...fields) => {
   let pickObj = {};
   const props = Object.keys(obj);
 
-  for (let prop of props) {
+  for (const prop of props) {
     for (let i = 0; i < fields.length; i++) {
       if (fields[i] === prop) {
         pickObj[fields[i]] = obj[prop];
