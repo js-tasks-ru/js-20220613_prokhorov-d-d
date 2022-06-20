@@ -8,7 +8,7 @@ export const omit = (obj, ...fields) => {
   let pickObj = JSON.parse(JSON.stringify(obj));
   const props = Object.keys(pickObj);
 
-  for (let prop of props) {
+  for (const prop of props) {
     for (let i = 0; i < fields.length; i++) {
       if (prop === fields[i]) {
         delete pickObj[prop];
