@@ -1,18 +1,16 @@
 export default class ColumnChart {
+  chartHeight = 50;
   constructor({
     data = [],
     label = "",
-    value = "",
+    value = 0,
     link = "",
-    formatHeading = "",
-    chartHeight = 50,
+    formatHeading = (data) => data,
   } = {}) {
     this.data = data;
     this.label = label;
-    this.value = value;
+    this.value = formatHeading(value);
     this.link = link;
-    this.formatHeading = formatHeading;
-    this.chartHeight = chartHeight;
 
     this.render();
   }
@@ -33,10 +31,10 @@ export default class ColumnChart {
         </div>
         <div class="column-chart__container">
         <div data-element="header" class="column-chart__header">${
-          this.formatHeading ? this.formatHeading(this.value) : this.value
+          this.value
         }</div>
         <div data-element="body" class="column-chart__chart">
-            ${columns.join("")}
+            ${columns}
         </div>
         </div>
     </div>
@@ -44,14 +42,8 @@ export default class ColumnChart {
   }
 
   update(updateData) {
-    const childs = this.element.getElementsByClassName("column-chart__chart")[0]
-      .children;
-    for (const child of childs) {
-      child.remove();
-    }
     const columns = this.generateColumns(updateData);
-    this.element.getElementsByClassName("column-chart__chart")[0].innerHTML =
-      columns.join("");
+    this.subElements.body.innerHTML = columns;
   }
 
   generateColumns(data) {
@@ -64,7 +56,20 @@ export default class ColumnChart {
           }" data-tooltip="${((item / maxValue) * 100).toFixed(0)}%"></div>
       `;
     });
-    return columns;
+    return columns.join("");
+  }
+
+  getSubElements() {
+    const result = {};
+    const elements = this.element.querySelectorAll("[data-element]");
+
+    for (const subElement of elements) {
+      const name = subElement.dataset.element;
+
+      result[name] = subElement;
+    }
+
+    return result;
   }
 
   render() {
@@ -72,15 +77,20 @@ export default class ColumnChart {
 
     element.innerHTML = this.getTemplate();
     this.element = element.firstElementChild;
+
+    this.subElements = this.getSubElements();
   }
 
   initEventListner() {}
 
   remove() {
-    this.element.remove();
+    if (this.element) {
+      this.element.remove();
+    }
   }
 
   destroy() {
     this.remove();
+    this.element = null;
   }
 }
