@@ -16,16 +16,9 @@ export default class ColumnChart {
 
     this.render();
   }
+
   getTemplate() {
-    const maxValue = Math.max(...this.data);
-    const generateColumns = this.data.map((item) => {
-      return `
-        <div style="--value: ${
-          // scale depends on charHeight
-          Math.floor((item / maxValue) * this.chartHeight)
-        }" data-tooltip="${((item / maxValue) * 100).toFixed(0)}%"></div>
-    `;
-    });
+    const columns = this.generateColumns(this.data);
     return `
         <div class="column-chart ${
           !this.data.length ? "column-chart_loading" : ""
@@ -43,7 +36,7 @@ export default class ColumnChart {
           this.formatHeading ? this.formatHeading(this.value) : this.value
         }</div>
         <div data-element="body" class="column-chart__chart">
-            ${generateColumns.join("")}
+            ${columns.join("")}
         </div>
         </div>
     </div>
@@ -56,18 +49,22 @@ export default class ColumnChart {
     for (const child of childs) {
       child.remove();
     }
-
-    const maxValue = Math.max(...updateData);
-    const generateColumns = updateData.map((item) => {
-      return `
-        <div style="--value: ${
-          // scale depends on charHeight
-          Math.floor((item / maxValue) * this.chartHeight)
-        }" data-tooltip="${((item / maxValue) * 100).toFixed(0)}%"></div>
-    `;
-    });
+    const columns = this.generateColumns(updateData);
     this.element.getElementsByClassName("column-chart__chart")[0].innerHTML =
-      generateColumns.join("");
+      columns.join("");
+  }
+
+  generateColumns(data) {
+    const maxValue = Math.max(...data);
+    const columns = data.map((item) => {
+      return `
+          <div style="--value: ${
+            // scale depends on charHeight
+            Math.floor((item / maxValue) * this.chartHeight)
+          }" data-tooltip="${((item / maxValue) * 100).toFixed(0)}%"></div>
+      `;
+    });
+    return columns;
   }
 
   render() {
