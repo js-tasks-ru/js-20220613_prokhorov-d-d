@@ -1,11 +1,17 @@
 export default class NotificationMessage {
-  static isExist = false;
-  constructor(message, { duration = 0, type = "" } = {}) {
+  static prevNotification = null;
+  timerId = null;
+  constructor(message = "", { duration = 0, type = "" } = {}) {
     this.message = message;
     this.duration = duration;
     this.type = type;
 
     this.render();
+
+    if (NotificationMessage.prevNotification) {
+      NotificationMessage.prevNotification.remove();
+    }
+    NotificationMessage.prevNotification = this;
   }
 
   createNotification() {
@@ -26,13 +32,10 @@ export default class NotificationMessage {
   show(target) {
     if (target) target.insertAdjacentHTML("beforeend", this.element.outerHTML);
     document.body.append(this.element);
-    NotificationMessage.isExist = true;
 
-    const timerId = setTimeout(() => {
+    this.timerId = setTimeout(() => {
       this.destroy();
-      NotificationMessage.isExist = false;
     }, this.duration);
-
   }
 
   render() {
@@ -44,6 +47,9 @@ export default class NotificationMessage {
 
   remove() {
     if (this.element) {
+      NotificationMessage.prevNotification = null;
+      // чистим таймер, иначе prevNotification после отработки setTimeout не будет удаляться, а будет дублироваться, т.к. prevNotification === this
+      clearTimeout(this.timerId);
       this.element.remove();
     }
   }
