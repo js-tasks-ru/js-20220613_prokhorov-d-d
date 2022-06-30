@@ -53,7 +53,7 @@ export default class SortableTable {
   getElements(data) {
     //Чтобы генерить values, то есть значения колонок для каждого item
     const values = data.map((item) => {
-      let arr = [];
+      const arr = [];
 
       for (const header of this.headers) {
         if (typeof header === "object") continue;
@@ -63,33 +63,10 @@ export default class SortableTable {
       return arr.join("");
     });
 
-    const products = data.map(
-      ({
-        id = "",
-        title = "",
-        description = "",
-        quantity = 0,
-        subcategory: {
-          id: subId = "",
-          title: subTitle = "",
-          count: subCount = 0,
-          weight: subWeight = 0,
-          category: {
-            id: categoryId = "",
-            title: categoryTitle = "",
-            count: categoryCount = 0,
-            weight: categoryWeigth = 0,
-          } = {},
-        } = {},
-        status = 0,
-        images = [],
-        price = 0,
-        discount = 0,
-        sales = 0,
-      }) => {
-        let arr = [];
-        for (const item of values) {
-          arr.push(`
+    const products = data.map(({ id = "", images = [] }) => {
+      const arr = [];
+      for (const item of values) {
+        arr.push(`
           <a href="/products/${id}" class="sortable-table__row">
 
 
@@ -98,10 +75,9 @@ export default class SortableTable {
             ${item}          
         </a>
         `);
-        }
-        return arr.join("");
       }
-    );
+      return arr.join("");
+    });
 
     return products.join("");
   }

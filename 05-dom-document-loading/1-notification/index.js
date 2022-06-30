@@ -31,6 +31,7 @@ export default class NotificationMessage {
 
   show(target) {
     if (target) target.insertAdjacentHTML("beforeend", this.element.outerHTML);
+    //if (target) target.append(this.element); -> падает тест
     document.body.append(this.element);
 
     this.timerId = setTimeout(() => {
