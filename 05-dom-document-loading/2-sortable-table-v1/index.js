@@ -42,7 +42,6 @@ export default class SortableTable {
   getElements(data) {
     return data
       .map((item) => {
-        console.log(item.id);
         return `
                 <a href="/products/${item.id}" class="sortable-table__row">
 
@@ -94,7 +93,6 @@ export default class SortableTable {
     let sortable = false;
     let sortType = "number";
 
-    //определиться с sortable и sortType
     for (const header of this.headerConfig) {
       if (fieldValue === header.id) {
         sortable = header.sortable;
