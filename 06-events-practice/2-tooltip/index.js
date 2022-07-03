@@ -40,16 +40,8 @@ class Tooltip {
   }
 
   showTooltip(event) {
-    if (
-      this.element &&
-      this.element.innerHTML === event.target.dataset.tooltip
-    ) {
-      this.element.style.left = event.pageX + 5 + "px";
-      this.element.style.top = event.pageY + 5 + "px";
-    } else {
-      this.element.style.left = event.pageX + 5 + "px";
-      this.element.style.top = event.pageY + 5 + "px";
-    }
+    this.element.style.left = event.pageX + 5 + "px";
+    this.element.style.top = event.pageY + 5 + "px";
   }
 
   render() {
