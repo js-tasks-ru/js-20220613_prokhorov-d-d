@@ -1,16 +1,10 @@
 export default class SortableTable {
+  element;
+  subElement = {};
+
   constructor(headerConfig = [], data = []) {
     this.headerConfig = headerConfig;
     this.data = data;
-
-    //складываем название заголовков => по этим ключам достаем свойства
-    this.headers = this.headerConfig.map((item) => {
-      if (item.template) {
-        return item;
-      } else {
-        return item.id;
-      }
-    });
 
     this.render();
   }
@@ -30,56 +24,45 @@ export default class SortableTable {
     `;
   }
 
-  getHeader(headerConfig, orderValue = "") {
-    const headers = headerConfig.map(
-      ({
-        id = "",
-        title = "",
-        sortable = false,
-        template = null,
-        sortType = "number",
-      }) => {
+  getHeader() {
+    return this.headerConfig
+      .map(({ id = "", title = "", sortable = false }) => {
         return `
-          <div class="sortable-table__cell" data-id="${id}" data-sortable="${sortable}" data-order="${orderValue}">
+          <div class="sortable-table__cell" data-id="${id}" data-sortable="${sortable}">
             <span>${title}</span>
+            <span data-element="arrow" class="sortable-table__sort-arrow">
+            <span class="sort-arrow"></span>
+          </span>
           </div>        
         `;
-      }
-    );
-
-    return headers.join("");
+      })
+      .join("");
   }
 
   getElements(data) {
-    //Чтобы генерить values, то есть значения колонок для каждого item
-    const values = data.map((item) => {
-      const arr = [];
+    return data
+      .map((item) => {
+        return `
+                <a href="/products/${item.id}" class="sortable-table__row">
 
-      for (const header of this.headers) {
-        if (typeof header === "object") continue;
-        arr.push(`<div class="sortable-table__cell">${item[header]}</div>`);
-      }
+                  ${this.getElement(item)}
+              </a>
+    `;
+      })
+      .join("");
+  }
 
-      return arr.join("");
+  getElement(item) {
+    const headers = this.headerConfig.map(({ id, template }) => {
+      return { id, template };
     });
-
-    const products = data.map(({ id = "", images = [] }) => {
-      const arr = [];
-      for (const item of values) {
-        arr.push(`
-          <a href="/products/${id}" class="sortable-table__row">
-
-
-            ${this.headers[0].template ? this.headers[0].template(images) : ""}
-
-            ${item}          
-        </a>
-        `);
-      }
-      return arr.join("");
-    });
-
-    return products.join("");
+    return headers
+      .map(({ id, template }) => {
+        return template
+          ? template(item[id])
+          : `<div class="sortable-table__cell">${item[id]}</div>`;
+      })
+      .join("");
   }
 
   sortValues(arr, fieldValue = "", param = "", sortType = "number") {
@@ -110,7 +93,6 @@ export default class SortableTable {
     let sortable = false;
     let sortType = "number";
 
-    //определиться с sortable и sortType
     for (const header of this.headerConfig) {
       if (fieldValue === header.id) {
         sortable = header.sortable;
@@ -124,6 +106,20 @@ export default class SortableTable {
       this.data = this.sortValues(this.data, fieldValue, orderValue, sortType);
     }
     this.data = this.sortValues(this.data, fieldValue, orderValue);
+
+    //add sort arrow
+    const allColumns = this.element.querySelectorAll(
+      ".sortable-table__cell[data-id]"
+    );
+    const currentColumn = this.element.querySelector(
+      `.sortable-table__cell[data-id="${fieldValue}"]`
+    );
+
+    allColumns.forEach((column) => {
+      column.dataset.order = "";
+    });
+
+    currentColumn.dataset.order = orderValue;
 
     this.update(this.data);
   }
