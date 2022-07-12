@@ -22,7 +22,6 @@ export default class SortableTable {
       this.loading = true;
 
       const data = await this.loadData(id, order, this.start, this.end);
-
       this.update(data);
 
       this.loading = false;
