@@ -124,16 +124,14 @@ export default class ProductForm {
   }
 
   async loadProductData(productId) {
-    let proudctURI = new URL(BACKEND_URL);
-    proudctURI.pathname = "/api/rest/products";
+    let proudctURI = new URL("/api/rest/products", BACKEND_URL);
     proudctURI.searchParams.set("id", productId);
 
     return fetchJson(proudctURI);
   }
 
   async loadCategoriesData() {
-    let categoriesURI = new URL(BACKEND_URL);
-    categoriesURI.pathname = "/api/rest/categories";
+    let categoriesURI = new URL("/api/rest/categories", BACKEND_URL);
     categoriesURI.searchParams.set("_sort", "weight");
     categoriesURI.searchParams.set("_refs", "subcategory");
 
@@ -222,8 +220,6 @@ export default class ProductForm {
     fileInput.addEventListener("change", async () => {
       const [file] = fileInput.files;
 
-      console.log(file);
-
       if (file) {
         const formData = new FormData();
         const { uploadImage, imageListContainer } = this.subElements;
@@ -268,8 +264,6 @@ export default class ProductForm {
         },
         body: JSON.stringify(product),
       });
-
-      console.log(result);
 
       this.dispatchEvent(result.id);
     } catch (error) {
